@@ -3,7 +3,7 @@
  * Tom Moor, http://tommoor.com
  * Copyright (c) 2011 Tom Moor
  * MIT Licensed
- * @version 0.1
+ * @version 0.2
 */
 
 (function($){
@@ -680,7 +680,8 @@
       style: 'font-select',
       placeholder: 'Select a font',
       lookahead: 2,
-      api: '//fonts.googleapis.com/css?family='
+      api: '//fonts.googleapis.com/css?family=',
+      addNoneOption: true
     };
 
     var Fontselect = (function(){
@@ -762,7 +763,11 @@
       Fontselect.prototype.updateSelected = function(){
 
         var font = this.$original.val();
-        $('span', this.$element).text(this.toReadable(font)).css(this.toStyle(font));
+        if(font == '') {
+            $('span', this.$element).text('None');
+        } else {
+            $('span', this.$element).text(this.toReadable(font)).css(this.toStyle(font));
+        }
       };
 
       Fontselect.prototype.setupHtml = function(){
@@ -781,6 +786,10 @@
 
         var l = fonts.length;
         var r, s, h = '';
+
+        if(this.options.addNoneOption === true) {
+          h += '<li data-value="">None</li>';
+        }
 
         for(var i=0; i<l; i++){
           r = this.toReadable(fonts[i]);
@@ -827,12 +836,13 @@
       };
 
       Fontselect.prototype.addFontLink = function(font){
+        if(font !== '') {
+            var link = this.options.api + font;
 
-        var link = this.options.api + font;
-
-        if ($("link[href*='" + font + "']").length === 0){
-			$('link:last').after('<link href="' + link + '" rel="stylesheet" type="text/css">');
-		}
+            if ($("link[href*='" + font + "']").length === 0){
+                $('link:last').after('<link href="' + link + '" rel="stylesheet" type="text/css">');
+            }
+        }
       };
 
       return Fontselect;
