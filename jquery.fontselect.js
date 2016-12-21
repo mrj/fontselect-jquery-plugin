@@ -1459,11 +1459,11 @@
       "Zeyada"];
 
     var settings = {
-      style: 'font-select',
-      placeholder: 'Select a font',
-      lookahead: 2,
-      api: '//fonts.googleapis.com/css?family=',
-      addNoneOption: true
+     style: options.style ? options.style : 'font-select',
+     placeholder: options.placeholder ? options.placeholder : 'Select a font',
+     lookahead: options.lookahead ? options.lookahead : 2,
+     api: '//fonts.googleapis.com/css?family=',
+     addNoneOption: true
     };
 
     var Fontselect = (function(){
