@@ -1566,7 +1566,7 @@
 
     });
      if (isVariants) {
-     str = str + "<br/>" + "variants" + "<br/>";
+     str = str + "<div class='fontInfo'>" + "variants" + "<br/>";
 
      var prevElementId = this.$element.prev().attr('id');
      $.each(fontData[font]["variants"], function (subIndex, subItem) {
@@ -1575,11 +1575,11 @@
 
        if (subIndex == "italic"){
 
-         strCheckbox = '<div class="radio"> <label><input type="radio" name="weight-'+ prevElementId +'" data-variant="italic" data-weight="' + index + '" data-value="italic ' + index + '">italic ' + index + '</label></div>';
+         strCheckbox = '<div class="checkbox"> <label><input type="checkbox" name="weight-'+ prevElementId +'" data-variant="italic" data-weight="' + index + '" checked>italic ' + index + '</label></div>';
 
 
       }else {
-        strCheckbox = '<div class="radio"> <label><input type="radio" name="weight-'+ prevElementId +' " data-variant="normal" data-weight="' + index + '" data-value="' + index + '">' + index + '</label></div>';
+        strCheckbox = '<div class="checkbox"> <label><input type="checkbox" name="weight-'+ prevElementId +' " data-variant="normal" data-weight="' + index + '" checked>' + index + '</label></div>';
       }
         str = str + strCheckbox;
       });
@@ -1589,10 +1589,10 @@
     }
 
     if (isSubsets) {
-     str = str + "<br/>" + "subsets" + "<br/>";
+     str = str + "</div><div class='fontInfo'>" + "subsets" + "<br/>";
      $.each(fontData[font]["subsets"], function (subIndex, subItem) {
 
-      var strCheckbox = '<div class="radio"> <label><input type="radio" name="subset-'+ prevElementId +'" data-value="'+ subItem +'">'+ subItem +'</label></div>';
+      var strCheckbox = '<div class="checkbox"> <label><input type="checkbox" name="subset-'+ prevElementId +'" data-value="'+ subItem +'" checked>'+ subItem +'</label></div>';
 
        str = str + strCheckbox;
 
@@ -1605,13 +1605,13 @@
 
     var thisElement = this.$element;
 
-    this.$element.append('<div id ="' + prevElementId +'FontOptions" class ="fontOptions">'+ str + '</div>');
+    this.$element.append('<div id ="' + prevElementId +'FontOptions" class ="fontOptions">'+ str + '</div></div>');
 
     this.$element.find('.checkbox').click(function(){
      $('#'+prevElementId).attr('data-variant', $(this).find('input').data('variant'));
      $('#'+prevElementId).attr('data-variant-weight', $(this).find('input').data('weight'));
 
-     thisElement.find('a span').attr("style", "");
+     // thisElement.find('a span').attr("style", "");
 
     });
 
