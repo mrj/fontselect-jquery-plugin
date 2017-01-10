@@ -1460,13 +1460,13 @@
   //  "Yesteryear",
   //  "Zeyada"];
 
-    var settings = {
-     style: options.style ? options.style : 'font-select',
-     placeholder: options.placeholder ? options.placeholder : 'Select a font',
-     lookahead: options.lookahead ? options.lookahead : 2,
-     api: '//fonts.googleapis.com/css?family=',
-     addNoneOption: true
-    };
+  var settings = {
+   style: options.style ? options.style : 'font-select',
+   placeholder: options.placeholder ? options.placeholder : 'Select a font',
+   lookahead: options.lookahead ? options.lookahead : 2,
+   api: '//fonts.googleapis.com/css?family=',
+   addNoneOption: true
+  };
 
   var Fontselect = (function(){
 
@@ -1556,32 +1556,40 @@
 
 
     $.each(fontData[font], function (index, item) {
-      // str = str + "<div></div>" + index + item;
-      if (index = "variants"){
-        isVariants = true;
+     if (index = "variants"){
+      isVariants = true;
      };
      if (index = "subsets"){
       isSubsets = true;
      };
 
     });
-     if (isVariants) {
+    var savedFontUrl = "";
+
+    if (isVariants) {
+
      str = str + "<div class='fontInfo'>" + "variants" + "<br/>";
 
      var prevElementId = this.$element.prev().attr('id');
+
+     savedFontUrl = this.$element.prev().attr('data-variant-weight');
+
+     var variantChecked = "checked";
+
      $.each(fontData[font]["variants"], function (subIndex, subItem) {
 
       $.each( subItem, function( index, value ) {
 
+
+
        if (subIndex == "italic"){
-
-         strCheckbox = '<div class="checkbox"> <label><input type="checkbox" name="weight-'+ prevElementId +'" data-variant="italic" data-weight="' + index + '" checked>italic ' + index + '</label></div>';
-
-
-      }else {
-        strCheckbox = '<div class="checkbox"> <label><input type="checkbox" name="weight-'+ prevElementId +' " data-variant="normal" data-weight="' + index + '" checked>' + index + '</label></div>';
-      }
-        str = str + strCheckbox;
+        variantChecked = Fontselect.prototype.checkboxselect(savedFontUrl,index+'i',font);
+        strCheckbox = '<div class="checkbox"> <label><input type="checkbox" name="'+prevElementId+'" data-font-name="'+font+'" data-variant="" data-weight="' + index + 'i" '+variantChecked+'>italic ' + index + '</label></div>';
+       }else {
+        variantChecked = Fontselect.prototype.checkboxselect(savedFontUrl,index);
+        strCheckbox = '<div class="checkbox"> <label><input type="checkbox" name="'+prevElementId+'" data-font-name="'+font+'" data-variant="" data-weight="' + index + '" '+variantChecked+'>' + index + '</label></div>';
+       }
+       str = str + strCheckbox;
       });
 
 
@@ -1592,33 +1600,81 @@
      str = str + "</div><div class='fontInfo'>" + "subsets" + "<br/>";
      $.each(fontData[font]["subsets"], function (subIndex, subItem) {
 
-      var strCheckbox = '<div class="checkbox"> <label><input type="checkbox" name="subset-'+ prevElementId +'" data-value="'+ subItem +'" checked>'+ subItem +'</label></div>';
+      var strCheckbox = '<div class="checkbox"> <label><input type="checkbox" name="subset-'+prevElementId+'" data-font-name="'+font+'" data-value="'+ subItem +'" '+variantChecked+'>'+ subItem +'</label></div>';
 
-       str = str + strCheckbox;
+      str = str + strCheckbox;
 
      });
     }
 
     this.$element.find('.fontOptions').remove();
 
-
-
     var thisElement = this.$element;
 
     this.$element.append('<div id ="' + prevElementId +'FontOptions" class ="fontOptions">'+ str + '</div></div>');
 
-    this.$element.find('.checkbox').click(function(){
-     $('#'+prevElementId).attr('data-variant', $(this).find('input').data('variant'));
-     $('#'+prevElementId).attr('data-variant-weight', $(this).find('input').data('weight'));
+    Fontselect.prototype.generateUrl(prevElementId, prevElementId);
 
-     // thisElement.find('a span').attr("style", "");
+
+
+
+    this.$element.find('.checkbox').click(function(){
+
+     var clickedInput = $(this).find('input').attr('name');
+     Fontselect.prototype.generateUrl(clickedInput, prevElementId);
 
     });
 
-
-
-
    };
+
+   Fontselect.prototype.checkboxselect = function(savedFontUrl,searchString,fontName){
+     var variantChecked = "";
+     if (savedFontUrl != undefined && savedFontUrl.indexOf(searchString) == -1 && savedFontUrl.indexOf(fontName) != -1){
+      variantChecked = "";
+     }else {
+      variantChecked = "checked";
+     }
+     return variantChecked;
+   }
+
+   Fontselect.prototype.generateUrl = function(clickedInput, prevElementId){
+    clickedInput = clickedInput.replace("subset-", "");
+
+    var variants = $("input[name='"+clickedInput+"']:checked");
+    var variantLen = variants.length;
+    var separator = ","
+
+    weightStr = $("input[name='subset-"+clickedInput+"']:checked, input[name='"+clickedInput+"']:checked").first().data('font-name')+':';
+
+    $("input[name='"+clickedInput+"']:checked").each( function (index,data) {
+
+     if (index == variantLen - 1) {
+      separator  = "";
+     }
+     weightStr = weightStr +  $(this).data('weight') + separator;
+
+    });
+
+    var subsets = $("input[name='subset-"+clickedInput+"']:checked");
+    var len = subsets.length;
+    separator = ","
+
+    // check for subsets
+    if (len > 0){
+     weightStr = weightStr + '&subset=';
+    }
+
+
+    subsets.each( function (index,data) {
+     if (index == len - 1) {
+      separator  = "";
+     }
+     weightStr = weightStr + $(this).data('value') + separator;
+    });
+
+    $('#'+prevElementId).attr('data-variant-weight', weightStr);
+    $('#'+prevElementId).attr('data-variant', weightStr);
+   }
 
    Fontselect.prototype.setupHtml = function(){
 
@@ -1636,7 +1692,7 @@
 
     var fontsNew = []
     $.each(fontData, function (index, item) {
-      fontsNew.push(index);
+     fontsNew.push(index);
     });
     fonts = fontsNew;
     var l = fonts.length;
@@ -1660,8 +1716,8 @@
     var fontStyle = "";
     if(typeof t[1] != 'undefined'){
      if(t[1] == "italic"){
-       fontStyle = "italic";
-       t[1] == 400;
+      fontStyle = "italic";
+      t[1] == 400;
      }else if(t[1].indexOf('italic') != -1){
       t[1] = t[1].replace("italic", "");
       fontStyle = "italic";
