@@ -29,6 +29,7 @@
   -o-box-shadow     : 0 4px 5px rgba(0,0,0,.15);
   box-shadow        : 0 4px 5px rgba(0,0,0,.15);
   z-index: 999;
+  width:100%;
 }
 
 .font-select > a {
@@ -114,7 +115,7 @@
 .font-select .fs-results {
   margin: 0 4px 4px 0;
   max-height: 190px;
-  width: 200px;
+  width: 100%;
   padding: 0 0 0 4px;
   position: relative;
   overflow-x: hidden;
@@ -162,6 +163,7 @@
   background-image: -webkit-linear-gradient(center bottom, white 0%, #eeeeee 50%);
   background-image: -moz-linear-gradient(center bottom, white 0%, #eeeeee 50%);
   background-image: -o-linear-gradient(bottom, white 0%, #eeeeee 50%);
+  background-image: -ms-linear-gradient(top, #ffffff 0%,#eeeeee 50%);
   background-image: -ms-linear-gradient(top, #ffffff 0%,#eeeeee 50%);
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#eeeeee',GradientType=0 );
   background-image: linear-gradient(top, #ffffff 0%,#eeeeee 50%);
