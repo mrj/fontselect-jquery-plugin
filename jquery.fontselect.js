@@ -312,7 +312,7 @@
                 if (typeof t[1] != 'undefined') {
                     if (t[1] == "italic") {
                         fontStyle = "italic";
-                        t[1] == 400;
+                        t[1] == "normal";
                     } else if (t[1].indexOf('italic') != -1) {
                         t[1] = t[1].replace("italic", "");
                         fontStyle = "italic";
@@ -320,7 +320,7 @@
                     ;
                 }
 
-                return {'font-family': this.toReadable(t[0]), 'font-weight': (t[1] || 400), 'font-style': fontStyle};
+                return {'font-family': this.toReadable(t[0]), 'font-weight': (t[1] || 'normal'), 'font-style': fontStyle};
             };
 
             Fontselect.prototype.getVisibleFonts = function () {
@@ -349,9 +349,37 @@
                 });
             };
 
+            Fontselect.prototype.getDefaultFontWeight = function (font) {
+                var defaultFontValue = "";
+
+                if (undefined != fontData[font]["variants"]["normal"]["400"] ){
+
+                    return 400;
+
+                }else {
+                    $.each(fontData[font]["variants"], function (subIndex, subItem) {
+
+                        $.each(subItem, function (index, value) {
+
+                            defaultFontValue = index;
+                            return false;
+
+                        });
+
+                        return false;
+                    });
+                }
+
+
+
+                return defaultFontValue;
+            }
+
             Fontselect.prototype.addFontLink = function (font) {
 
-                var link = this.options.api + font;
+                var defaultFontWeight = Fontselect.prototype.getDefaultFontWeight(font);
+
+                var link = this.options.api + font + ":" + defaultFontWeight;
 
                 if ($("link[href*='" + font + "']").length === 0) {
                     $('link:last').after('<link href="' + link + '" rel="stylesheet" type="text/css">');
