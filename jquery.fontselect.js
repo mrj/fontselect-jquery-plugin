@@ -21,7 +21,8 @@
             placeholder: options.placeholder ? options.placeholder : 'Select a font',
             lookahead: options.lookahead ? options.lookahead : 2,
             api: '//fonts.googleapis.com/css?family=',
-            addNoneOption: true
+            addNoneOption: options.addNoneOption == null ? true : options.addNoneOption,
+            showFontOptions: options.showFontOptions == null ? true : options.showFontOptions
         };
 
         var Fontselect = (function () {
@@ -37,7 +38,7 @@
                 var font = this.$original.val();
                 if (font) {
                     this.updateSelected();
-                    this.addFontLink(font);
+                    this.addFontLink(font, true);
                 }
             }
 
@@ -72,6 +73,7 @@
             Fontselect.prototype.selectFont = function () {
 
                 var font = $('li.active', this.$results).data('value');
+                this.addFontLink(font, true);
                 this.$original.val(font).change();
                 this.updateSelected();
                 this.toggleDrop();
@@ -104,6 +106,8 @@
 
                 var font = this.$original.val();
                 $('span', this.$element).text(this.toReadable(font)).css(this.toStyle(font));
+                
+                if (!this.options.showFontOptions) return;
 
                 var str = "";
                 var isVariants = false;
@@ -375,11 +379,10 @@
                 return defaultFontValue;
             }
 
-            Fontselect.prototype.addFontLink = function (font) {
+            Fontselect.prototype.addFontLink = function (font, allWeights) {
 
-                var defaultFontWeight = Fontselect.prototype.getDefaultFontWeight(font);
-
-                var link = this.options.api + font + ":" + defaultFontWeight;
+                var link = this.options.api + font + ":" +
+                    (allWeights ? $.map(fontData[font].variants.normal, function(empty, weight) { return weight; }).join(',') : Fontselect.prototype.getDefaultFontWeight(font));
 
                 if ($("link[href*='" + font + "']").length === 0) {
                     $('link:last').after('<link href="' + link + '" rel="stylesheet" type="text/css">');

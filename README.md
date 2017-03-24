@@ -4,6 +4,12 @@ A font selector to choose from fonts available as part of the Google Web Fonts a
 
 Let users easily select and preview a font from Google's large range of free fonts.
 
+## Changes From Parent
+
+The goal has been changed from selecting a font and a set of variants and subsets to selecting just the font and loading all weight variants of the selected font,
+ready to display a particular weight when a font-weight style is set. Subsets and italic variants aren't currently loaded.
+
+To support this, a `showFontOptions` option has been added, which, if set false, prevents rendering of the variant and subset checkboxes.
 
 ## Documentation
 
