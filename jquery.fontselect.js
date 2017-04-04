@@ -38,7 +38,6 @@
                 var font = this.$original.val();
                 if (font) {
                     this.updateSelected();
-                    this.addFontLink(font, true);
                 }
             }
 
@@ -71,9 +70,7 @@
             };
 
             Fontselect.prototype.selectFont = function () {
-
                 var font = $('li.active', this.$results).data('value');
-                this.addFontLink(font, true);
                 this.$original.val(font).change();
                 this.updateSelected();
                 this.toggleDrop();
@@ -105,6 +102,7 @@
             Fontselect.prototype.updateSelected = function () {
 
                 var font = this.$original.val();
+                this.addFontLink(font, true);
                 $('span', this.$element).text(this.toReadable(font)).css(this.toStyle(font));
                 
                 if (!this.options.showFontOptions) return;
@@ -213,7 +211,7 @@
                 }
 
                 return subsetChecked;
-            }
+            };
 
             Fontselect.prototype.checkboxVariantSelect = function (savedFontUrl, searchString, fontName, variant) {
                 var variantChecked = "";
@@ -235,14 +233,14 @@
                 }
 
                 return variantChecked;
-            }
+            };
 
             Fontselect.prototype.generateUrl = function (clickedInput, prevElementId) {
                 clickedInput = clickedInput.replace("subset-", "");
 
                 var variants = $("input[name='" + clickedInput + "']:checked");
                 var variantLen = variants.length;
-                var separator = ","
+                var separator = ",";
 
                 weightStr = $("input[name='subset-" + clickedInput + "']:checked, input[name='" + clickedInput + "']:checked").first().data('font-name') + ':';
 
@@ -257,7 +255,7 @@
 
                 var subsets = $("input[name='subset-" + clickedInput + "']:checked");
                 var len = subsets.length;
-                separator = ","
+                separator = ",";
 
                 // check for subsets
                 if (len > 0) {
@@ -273,7 +271,7 @@
                 });
 
                 $('#' + prevElementId).attr('data-variant-weight', weightStr);
-            }
+            };
 
             Fontselect.prototype.setupHtml = function () {
 
@@ -289,7 +287,7 @@
 
             Fontselect.prototype.fontsAsHtml = function () {
 
-                var fontsNew = []
+                var fontsNew = [];
                 $.each(fontData, function (index, item) {
                     fontsNew.push(index);
                 });
@@ -360,7 +358,7 @@
 
                     return 400;
 
-                }else {
+                } else {
                     $.each(fontData[font]["variants"], function (subIndex, subItem) {
 
                         $.each(subItem, function (index, value) {
@@ -377,10 +375,9 @@
 
 
                 return defaultFontValue;
-            }
+            };
 
             Fontselect.prototype.addFontLink = function (font, allWeights) {
-
                 var link = this.options.api + font + ":" +
                     (allWeights ? $.map(fontData[font].variants.normal, function(empty, weight) { return weight; }).join(',') : Fontselect.prototype.getDefaultFontWeight(font));
 
@@ -391,12 +388,21 @@
 
             return Fontselect;
         })();
+        
+        if (!this.length) return this;
+        var otherArgs = Array.prototype.slice.call(arguments, 1);
 
-        return this.each(function (options) {
-            // If options exist, lets merge them
-            if (options) $.extend(settings, options);
-
-            return new Fontselect(this, settings);
+        return this.each(function () {
+           if (typeof options === "string") {
+             var instance = $(this).data("fontselect");
+             if (instance) instance[options].apply(instance, otherArgs);
+           } else {
+            var clonedSettings = $.extend({}, settings);
+            // If options exist, let's merge them
+            if (options) $.extend(clonedSettings, options);
+            var instance = new Fontselect(this, clonedSettings);
+            $(this).data("fontselect", instance);
+           }
         });
 
     };

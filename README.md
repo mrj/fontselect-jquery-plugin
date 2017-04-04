@@ -11,26 +11,38 @@ ready to display a particular weight when a font-weight style is set. Subsets an
 
 To support this, a `showFontOptions` option has been added, which, if set false, prevents rendering of the variant and subset checkboxes.
 
+Also, to save time and memory in re-initialization, the ability to call methods on existing fontselect instances has been added.
+
 ## Documentation
 
 To create a font selector simply run the plugin on a standard html input element.
 
 ### How to use
 
-        $('input.fonts').fontselect();
+Initialize via:
 
-### Options
+        [jQueryElements].fontselect(options);
+        
+Call a method on already-initialized font selectors:
 
-Fontselect has one argument, an options object that you might want to customise:
+        [jQueryElements].fontselect("method", args...);
+        
+        e.g. $('#font').fontselect("updateSelected") can be used to update the selector after changing the value of the underlying id="font" text box.
 
-* style: the class to give the new font selector
-* placeholder: text to use when no font is selected yet
-* lookahead: a number of fonts to try and preload ahead in the select box
+### Initialization Options
+
+* style: the class to give the new font selector, default 'font-select'
+* placeholder: text to use when no font is selected yet, default 'Select a font'
+* lookahead: a number of fonts to try and preload ahead in the select box, default 2
+* addNoneOption: boolean flag to allow no font to be selected, default true
+* showFontOptions: boolean flag to show checkboxes to select a set of the font's variants and subsets, default true
 
         $('input.fonts').fontselect({
           style: 'font-select',
           placeholder: 'Select a font',
-          lookahead: 2
+          lookahead: 2,
+          addNoneOption: true,
+          showFontOptions: true
         });
            
 ### Events
