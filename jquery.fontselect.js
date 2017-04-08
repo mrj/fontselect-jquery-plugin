@@ -390,18 +390,25 @@
         })();
         
         if (!this.length) return this;
-        var otherArgs = Array.prototype.slice.call(arguments, 1);
+        
+        var otherArgs, allOptions;
+        
+        if (typeof options === "string") {
+          otherArgs = Array.prototype.slice.call(arguments, 1);
+        } else {
+          allOptions = $.extend({}, settings);
+          // If options exist, let's merge them
+          if (options) $.extend(allOptions, options);
+        }
 
         return this.each(function () {
-           if (typeof options === "string") {
-             var instance = $(this).data("fontselect");
-             if (instance) instance[options].apply(instance, otherArgs);
-           } else {
-            var clonedSettings = $.extend({}, settings);
-            // If options exist, let's merge them
-            if (options) $.extend(clonedSettings, options);
-            var instance = new Fontselect(this, clonedSettings);
+          var instance;
+          if (allOptions) {
+            instance = new Fontselect(this, allOptions);
             $(this).data("fontselect", instance);
+           } else {
+            instance = $(this).data("fontselect");
+            instance[options].apply(instance, otherArgs);
            }
         });
 
